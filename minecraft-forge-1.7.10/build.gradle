@@ -1,0 +1,78 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        maven {
+            name 'jitpack'
+            url 'https://jitpack.io'
+        }
+        maven {
+            name = "github"
+            url = "https://github.com/juanmuscaria/maven/raw/master"
+        }
+    }
+    dependencies {
+        classpath 'com.github.MJaroslav:ForgeGradle:FG_1.2-patch-1-SNAPSHOT' // Temporary
+    }
+}
+
+repositories {
+    maven {
+        name 'ProfMobius Repo'
+        url 'http://mobiusstrip.eu/maven'
+    }
+    maven {
+        name 'ChickenBones Repo'
+        url 'https://chickenbones.net/maven/'
+    }
+    maven {
+        name 'jitpack'
+        url 'https://jitpack.io'
+    }
+    mavenCentral()
+}
+
+apply plugin: 'forge'
+
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
+
+def modprop = new Properties()
+file("mod.properties").withInputStream { modprop.load(it) }
+
+def buildprop = new Properties()
+file("build.properties").withInputStream { buildprop.load(it) }
+
+version = modprop.version
+group = modprop.group
+archivesBaseName = modprop.name
+
+minecraft {
+    version = "${buildprop.game_version}-${buildprop.forge_version}-${buildprop.game_version}"
+    runDir = buildprop.run_dir
+    replace '@VERSION@', project.version
+    //srgExtra "PK: gloomyfolken/hooklib com/github/mjaroslav/mjutils/gloomyfolken/hooklib"
+    //srgExtra "PK: blue/endless/jankson com/github/mjaroslav/mjutils/blue/endless/jankson"
+}
+
+dependencies {
+    compile "codechicken:CodeChickenLib:${buildprop.ccl_version}:dev"
+    compile "codechicken:CodeChickenCore:${buildprop.ccc_version}:dev"
+    compile "codechicken:NotEnoughItems:${buildprop.nei_version}:dev"
+    compile "mcp.mobius.waila:Waila:${buildprop.waila_version}"
+    compile project(":core")
+}
+
+processResources {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    includeEmptyDirs = false
+    inputs.property 'version', project.version
+    inputs.property 'mcversion', project.minecraft.version
+
+    from(sourceSets.main.resources.srcDirs) {
+        include 'mcmod.info'
+        expand 'version': project.version, 'mcversion': project.minecraft.version
+    }
+    from(sourceSets.main.resources.srcDirs) {
+        exclude 'mcmod.info'
+    }
+}

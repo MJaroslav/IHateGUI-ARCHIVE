@@ -1,0 +1,38 @@
+def buildprop = new Properties()
+file("build.properties").withInputStream { buildprop.load(it) }
+
+subprojects {
+    buildscript {
+        repositories {
+            mavenCentral()
+        }
+    }
+
+    apply plugin: 'java'
+    apply plugin: 'idea'
+
+    configurations {
+        shade
+
+        compile.extendsFrom(shade)
+    }
+
+    idea.module.inheritOutputDirs = true
+
+    dependencies {
+        compileOnly "org.projectlombok:lombok:${buildprop.lombok_version}"
+        annotationProcessor "org.projectlombok:lombok:${buildprop.lombok_version}"
+
+        testCompileOnly "org.projectlombok:lombok:${buildprop.lombok_version}"
+        testAnnotationProcessor "org.projectlombok:lombok:${buildprop.lombok_version}"
+    }
+
+    tasks.withType(Jar)*.doFirst {
+        includeEmptyDirs = false
+        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+        configurations.shade.each { dep ->
+            from project.zipTree(dep)
+        }
+    }
+}
+

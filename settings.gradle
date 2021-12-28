@@ -1,0 +1,3 @@
+rootProject.name = "IHateGUI"
+
+include("core", "minecraft-forge-1.7.10")
