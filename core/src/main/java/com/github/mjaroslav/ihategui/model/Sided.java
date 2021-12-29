@@ -1,8 +1,8 @@
 package com.github.mjaroslav.ihategui.model;
 
-import blue.endless.jankson.JsonObject;
-import com.github.mjaroslav.ihategui.util.JsonHelper;
 import lombok.Data;
+
+import java.util.Arrays;
 
 @Data
 public class Sided {
@@ -22,12 +22,20 @@ public class Sided {
         setAll(value, value, value, value);
     }
 
-    public void loadFromJson(JsonObject object) {
-        if (object == null)
+    public void loadFromValue(String value) {
+        if (value == null)
             return;
-        top = JsonHelper.getOrDefault(object, "top", top);
-        bottom = JsonHelper.getOrDefault(object, "bottom", bottom);
-        left = JsonHelper.getOrDefault(object, "left", left);
-        right = JsonHelper.getOrDefault(object, "right", right);
+        int[] sides = Arrays.stream(value.split(";")).mapToInt(Integer::parseInt).toArray();
+        if (sides.length == 1)
+            top = bottom = left = right = sides[0];
+        else if (sides.length == 2) {
+            top = bottom = sides[0];
+            left = right = sides[1];
+        } else if (sides.length == 4) {
+            top = sides[0];
+            bottom = sides[1];
+            left = sides[2];
+            right = sides[3];
+        }
     }
 }

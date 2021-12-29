@@ -1,26 +1,41 @@
 package com.github.mjaroslav.ihategui.model;
 
-import blue.endless.jankson.JsonObject;
-import com.github.mjaroslav.ihategui.util.JsonHelper;
 import lombok.Data;
 
 @Data
 public class Dimension {
     protected Type type = Type.MATCH_PARENT;
     protected int value = 0;
+    protected int weight = 1;
 
-    public void loadFromJson(JsonObject object) {
-        if (object == null)
+    public void loadFromValue(String value) {
+        if (value == null)
             return;
-        type = Type.fromName(JsonHelper.getOrDefault(object, "type", type.toString()));
-        value = JsonHelper.getOrDefault(object, "value", value);
+        type = Type.fromValue(value);
+        this.value = type == Type.VALUE ? Integer.parseInt(value) : this.value;
+        weight = type == Type.WEIGHT ? Integer.parseInt(value.substring(0, value.length() - 1)) : weight;
     }
 
     public enum Type {
-        MATCH_PARENT, MATCH_CONTENT, VALUE;
+        MATCH_PARENT, MATCH_CONTENT, VALUE, WEIGHT;
 
-        public static Type fromName(String name) {
-            return valueOf(name.toUpperCase());
+        public static Type fromValue(String value) {
+            try {
+                return valueOf(value.toUpperCase());
+            } catch (IllegalArgumentException ignored) {
+                try {
+                    if (value.toUpperCase().endsWith("W")) {
+                        String percent = value.substring(0, value.length() - 1);
+                        Float.parseFloat(percent);
+                        return WEIGHT;
+                    } else {
+                        Integer.parseInt(value);
+                        return VALUE;
+                    }
+                } catch (NumberFormatException ignored1) {
+                    return MATCH_PARENT;
+                }
+            }
         }
     }
 }

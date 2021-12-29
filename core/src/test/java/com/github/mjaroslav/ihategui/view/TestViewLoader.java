@@ -14,9 +14,9 @@ public class TestViewLoader {
     }
 
     @Test
-    public void testLoad() {
+    public void load() {
         ViewLoader loader = new ViewLoader();
-        loader.load(TestViewLoader.class.getResourceAsStream("test_view.json"));
+        loader.load(TestViewLoader.class.getResourceAsStream("load.json"));
 
         Layout actual = loader.container;
 

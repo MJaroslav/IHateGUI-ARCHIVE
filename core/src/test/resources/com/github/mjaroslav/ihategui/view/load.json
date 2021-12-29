@@ -1,0 +1,15 @@
+{
+  "class": "LinearLayout",
+  "controller": "com.github.mjaroslav.ihategui.view.TestViewLoader$EmptyController",
+  "orientation": "vertical",
+  "elements": [
+    {
+      "class": "Button",
+      "text": "test",
+      "margin": "10;15;5;5",
+      "padding": "1",
+      "enable": false,
+      "id": "btn1"
+    }
+  ]
+}
