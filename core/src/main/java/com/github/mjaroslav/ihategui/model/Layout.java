@@ -15,11 +15,14 @@ import java.util.List;
 @ToString(callSuper = true)
 @Data
 public abstract class Layout extends Element {
+    protected Object controller;
     protected final List<Element> elements = new ArrayList<>();
 
     @Override
     public void loadFromJson(JsonObject object) {
         super.loadFromJson(object);
+        if (object.containsKey("controller"))
+            controller = ReflectionHelper.createClassInstance(object.get(String.class, "controller"));
         JsonElement elements = object.get("elements");
         if (elements instanceof JsonArray) {
             JsonArray array = (JsonArray) elements;

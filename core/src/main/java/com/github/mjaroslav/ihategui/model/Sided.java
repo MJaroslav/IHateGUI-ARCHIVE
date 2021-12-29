@@ -11,6 +11,17 @@ public class Sided {
     protected int left = 0;
     protected int right = 0;
 
+    public void setAll(int top, int bottom, int left, int right) {
+        this.top = top;
+        this.bottom = bottom;
+        this.left = left;
+        this.right = right;
+    }
+
+    public void setAll(int value) {
+        setAll(value, value, value, value);
+    }
+
     public void loadFromJson(JsonObject object) {
         if (object == null)
             return;
