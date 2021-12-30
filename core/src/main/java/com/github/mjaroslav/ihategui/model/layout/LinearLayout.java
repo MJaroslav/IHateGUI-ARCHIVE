@@ -2,6 +2,7 @@ package com.github.mjaroslav.ihategui.model.layout;
 
 import blue.endless.jankson.JsonObject;
 import blue.endless.jankson.JsonPrimitive;
+import blue.endless.jankson.annotation.Deserializer;
 import com.github.mjaroslav.ihategui.model.Element;
 import com.github.mjaroslav.ihategui.model.Layout;
 import com.github.mjaroslav.ihategui.model.Orientation;
@@ -18,6 +19,13 @@ public class LinearLayout extends Layout {
     public void loadFromJson(JsonObject object) {
         super.loadFromJson(object);
         orientation = Orientation.fromName(JsonHelper.getOrDefault(object, "orientation", orientation.toString()));
+    }
+
+    @Deserializer
+    public static LinearLayout deserialize(JsonObject object) {
+        val result = new LinearLayout();
+        result.loadFromJson(object);
+        return result;
     }
 
     @Override

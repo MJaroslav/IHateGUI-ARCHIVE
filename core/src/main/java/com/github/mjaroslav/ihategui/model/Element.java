@@ -2,32 +2,34 @@ package com.github.mjaroslav.ihategui.model;
 
 import blue.endless.jankson.JsonObject;
 import com.github.mjaroslav.ihategui.util.JsonHelper;
+import com.github.mjaroslav.ihategui.view.ViewLoader;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-@EqualsAndHashCode(exclude = "parent")
-@ToString(exclude = "parent")
+@EqualsAndHashCode(exclude = {"loader", "parent"})
+@ToString(exclude = {"loader", "parent"})
 @Data
 public abstract class Element {
     //
     // View parameters
     //
-    protected final Dimension width = new Dimension();
-    protected final Dimension height = new Dimension();
+    protected Dimension width = new Dimension();
+    protected Dimension height = new Dimension();
     protected int x, y;
-    protected final Sided padding = new Sided();
-    protected final Sided margin = new Sided();
+    protected Sided padding = new Sided();
+    protected Sided margin = new Sided();
     protected String id = "";
     protected boolean enabled;
     protected boolean visible;
     protected Alignment alignment = Alignment.TOP_LEFT;
-    protected final JsonObject extra = new JsonObject();
+    protected JsonObject extra = new JsonObject();
 
     //
     // Internal parameters
     //
     protected Layout parent;
+    protected ViewLoader loader;
 
     public void setWidth(String value) {
         width.loadFromValue(value);
@@ -38,11 +40,11 @@ public abstract class Element {
     }
 
     public void setPadding(String value) {
-        padding.loadFromValue(value);
+        padding.set(value);
     }
 
     public void setMargin(String value) {
-        margin.loadFromValue(value);
+        margin.set(value);
     }
 
     public void packToParent() {
@@ -63,10 +65,11 @@ public abstract class Element {
     }
 
     public void loadFromJson(JsonObject object) {
+        loader = ViewLoader.getLoader(object.get(String.class, "loader"));
         width.loadFromValue(object.get(String.class, "width"));
         height.loadFromValue(object.get(String.class, "height"));
-        padding.loadFromValue(object.get(String.class, "padding"));
-        margin.loadFromValue(object.get(String.class, "margin"));
+        padding.set(object.get(String.class, "padding"));
+        margin.set(object.get(String.class, "margin"));
         id = JsonHelper.getOrDefault(object, "id", id);
         enabled = JsonHelper.getOrDefault(object, "enabled", enabled);
         visible = JsonHelper.getOrDefault(object, "visible", visible);

@@ -2,7 +2,7 @@ package com.github.mjaroslav.ihategui.model;
 
 import blue.endless.jankson.JsonArray;
 import blue.endless.jankson.JsonObject;
-import com.github.mjaroslav.ihategui.util.ReflectionHelper;
+import com.github.mjaroslav.ihategui.view.ViewLoader;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -19,41 +19,53 @@ public abstract class Layout extends Element {
     //
     // View parameters
     //
-    protected Object controller;
-    protected final List<Element> elements = new ArrayList<>();
+    protected List<Element> elements = new ArrayList<>();
 
     public void addElement(Element element) {
         element.parent = this;
+        element.loader = loader;
         elements.add(element);
+    }
+
+    public void setLoader(ViewLoader loader) {
+        this.loader = loader;
+        elements.forEach(e -> e.setLoader(loader));
     }
 
     public void addElements(Element... elements) {
         for (Element element : elements) {
             element.parent = this;
+            element.loader = loader;
             this.elements.add(element);
         }
     }
 
     public void addElements(Collection<Element> elements) {
-        elements.stream().map(e -> e.parent = this).forEach(elements::add);
+        elements.stream().peek(e -> {
+            e.parent = this;
+            e.loader = loader;
+        }).forEach(elements::add);
     }
 
     @Override
     public void loadFromJson(JsonObject object) {
         super.loadFromJson(object);
-//        if (object.containsKey("controller"))
-//            controller = ReflectionHelper.createClassInstance(object.get(String.class, "controller"));
-//        val elements = object.get("elements");
-//        if (elements instanceof JsonArray) {
-//            val array = (JsonArray) elements;
-//            array.stream().map(e -> (JsonObject) e).forEach(obj -> {
-//                val element = (Element) ReflectionHelper.createModelElement(obj.get(String.class, "class"));
-//                if (element != null) {
-//                    element.loadFromJson(obj);
-//                    addElement(element);
-//                }
-//            });
-//        }
+        val elements = object.get("elements");
+        if (elements instanceof JsonArray) {
+            val array = (JsonArray) elements;
+            array.stream().map(e -> (JsonObject) e).forEach(obj -> {
+                Element element = null;
+                try {
+                    element = loader.fromJson(obj);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                if (element != null) {
+                    element.loadFromJson(obj);
+                    addElement(element);
+                }
+            });
+        }
 
     }
 

@@ -1,5 +1,9 @@
 {
   "class": "LinearLayout",
+  "imports": [
+    "com.github.mjaroslav.ihategui.model.element.*",
+    "com.github.mjaroslav.ihategui.model.layout.*"
+  ],
   "controller": "com.github.mjaroslav.ihategui.view.TestViewLoader$EmptyController",
   "orientation": "vertical",
   "elements": [

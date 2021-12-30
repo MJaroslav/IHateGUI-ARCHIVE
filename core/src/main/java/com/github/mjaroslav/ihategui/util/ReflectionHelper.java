@@ -1,27 +1,59 @@
 package com.github.mjaroslav.ihategui.util;
 
 import lombok.val;
+import lombok.var;
+import org.reflections.Reflections;
+import org.reflections.util.ClasspathHelper;
 
 import java.net.URI;
+import java.net.URL;
 import java.net.URLDecoder;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.jar.JarFile;
 import java.util.stream.Collectors;
 
 public class ReflectionHelper {
-    public static List<Class<?>> getClassesInPackage(String packageName, boolean tree) throws Exception {
-        val classLoader = Thread.currentThread().getContextClassLoader();
+    public static Set<Class<?>> getClassesInPackage(String packageName, boolean tree) throws Exception {
+        packageName = packageName.replace('.', '/');
+        val result = new HashSet<Class<?>>();
+        val URLs = Thread.currentThread().getContextClassLoader().getResources(packageName);
+        while(URLs.hasMoreElements())
+            getClassesInPackage(result, URLs.nextElement(), packageName, tree);
+        return result;
+//        val a = Thread.currentThread().getContextClassLoader().getResources(packageName);
+//        while (a.hasMoreElements()) {
+//            val u = a.nextElement();
+//        }
+//        var classLoader = Thread.currentThread().getContextClassLoader();
+//        while (classLoader != null) {
+//            getClassesInPackage(result, classLoader, packageName, tree);
+//            classLoader = classLoader.getParent();
+//        }
+//        classLoader = ReflectionHelper.class.getClassLoader();
+//        while (classLoader != null) {
+//            getClassesInPackage(result, classLoader, packageName, tree);
+//            classLoader = classLoader.getParent();
+//        }
+//        classLoader = ClassLoader.getSystemClassLoader();
+//        while (classLoader != null) {
+//            getClassesInPackage(result, classLoader, packageName, tree);
+//            classLoader = classLoader.getParent();
+//        }
+//        return result;
+    }
+
+    private static void getClassesInPackage(Set<Class<?>> result, URL packageURL, String packageName, boolean tree) throws Exception {
         val names = new ArrayList<String>();
 
-        packageName = packageName.replace('.', '/');
-        val packageURL = classLoader.getResource(packageName);
+        if (packageURL == null)
+            return;
 
-        if (Objects.requireNonNull(packageURL).getProtocol().equals("jar")) {
+        if (packageURL.getProtocol().equals("jar")) {
             val jarFileName = URLDecoder.decode(packageURL.getFile(), "UTF-8");
             val jarFile = new JarFile(jarFileName.substring(5, jarFileName.indexOf('!')));
             val jarEntries = jarFile.entries();
@@ -44,10 +76,8 @@ public class ReflectionHelper {
                         names.add(file.replace('/', '.'));
                     });
         }
-        val result = new ArrayList<Class<?>>();
         for (val name : names.stream().map(name -> name.replace(".class", "")).collect(Collectors.toList()))
             result.add(Class.forName(name));
-        return result;
     }
 
     public static Object createClassInstance(String clazz) throws Exception {

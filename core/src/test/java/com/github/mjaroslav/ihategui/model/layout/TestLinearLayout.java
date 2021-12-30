@@ -7,7 +7,6 @@ import com.github.mjaroslav.ihategui.model.element.Button;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.val;
-import org.junit.Assert;
 import org.junit.Test;
 
 public class TestLinearLayout {
@@ -23,7 +22,7 @@ public class TestLinearLayout {
     }
 
     @Test
-    public void packVertical() {
+    public void pack$vertical() {
         val actualRoot = new RootLayout();
         val actualLayout = new LinearLayout();
         actualLayout.setOrientation(Orientation.VERTICAL);
@@ -59,7 +58,7 @@ public class TestLinearLayout {
     }
 
     @Test
-    public void packHorizontal() {
+    public void pack$horizontal() {
         val actualRoot = new RootLayout();
         val actualLayout = new LinearLayout();
         val actualBtn = new Button();

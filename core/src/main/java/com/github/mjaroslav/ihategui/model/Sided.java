@@ -1,5 +1,7 @@
 package com.github.mjaroslav.ihategui.model;
 
+import blue.endless.jankson.JsonPrimitive;
+import blue.endless.jankson.annotation.Deserializer;
 import lombok.Data;
 import lombok.val;
 
@@ -12,19 +14,19 @@ public class Sided {
     protected int left = 0;
     protected int right = 0;
 
-    public void setAll(int top, int bottom, int left, int right) {
+    public void set(int top, int bottom, int left, int right) {
         this.top = top;
         this.bottom = bottom;
         this.left = left;
         this.right = right;
     }
 
-    public void setAll(int value) {
-        setAll(value, value, value, value);
+    public void set(int value) {
+        set(value, value, value, value);
     }
 
-    public void loadFromValue(String value) {
-        if (value == null)
+    public void set(String value) {
+        if(value == null)
             return;
         val sides = Arrays.stream(value.split(";")).mapToInt(Integer::parseInt).toArray();
         if (sides.length == 1)
@@ -38,5 +40,13 @@ public class Sided {
             left = sides[2];
             right = sides[3];
         }
+    }
+
+    @Deserializer
+    public static Sided deserialize(JsonPrimitive element) {
+        String value = element.asString();
+        val result = new Sided();
+        result.set(value);
+        return result;
     }
 }
