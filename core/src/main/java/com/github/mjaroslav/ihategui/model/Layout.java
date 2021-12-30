@@ -47,6 +47,22 @@ public abstract class Layout extends Element {
         }).forEach(elements::add);
     }
 
+    @SuppressWarnings("unchecked")
+    public <T extends Element> T findElementById(String id) {
+        if (id != null && id.length() > 0) {
+            for (val element : elements) {
+                if (id.equals(element.id))
+                    return (T) element;
+                if (element instanceof Layout) {
+                    val rec = ((Layout) element).findElementById(id);
+                    if (rec != null)
+                        return (T) rec;
+                }
+            }
+        }
+        return null;
+    }
+
     @Override
     public void loadFromJson(JsonObject object) {
         super.loadFromJson(object);

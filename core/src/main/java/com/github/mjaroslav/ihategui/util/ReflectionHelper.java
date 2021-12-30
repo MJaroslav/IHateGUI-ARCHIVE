@@ -1,9 +1,6 @@
 package com.github.mjaroslav.ihategui.util;
 
 import lombok.val;
-import lombok.var;
-import org.reflections.Reflections;
-import org.reflections.util.ClasspathHelper;
 
 import java.net.URI;
 import java.net.URL;
@@ -22,7 +19,7 @@ public class ReflectionHelper {
         packageName = packageName.replace('.', '/');
         val result = new HashSet<Class<?>>();
         val URLs = Thread.currentThread().getContextClassLoader().getResources(packageName);
-        while(URLs.hasMoreElements())
+        while (URLs.hasMoreElements())
             getClassesInPackage(result, URLs.nextElement(), packageName, tree);
         return result;
 //        val a = Thread.currentThread().getContextClassLoader().getResources(packageName);

@@ -76,7 +76,7 @@ public abstract class Element {
         x = JsonHelper.getOrDefault(object, "x", x);
         y = JsonHelper.getOrDefault(object, "y", y);
         alignment = Alignment.fromValue(JsonHelper.getOrDefault(object, "alignment", alignment.toString()));
-        if (object.containsKey("extra"))
-            extra.putAll(object.getObject("extra"));
+        object.entrySet().stream().filter(e -> e.getKey().startsWith("#"))
+                .forEach(e -> extra.put(e.getKey().substring(1), e.getValue()));
     }
 }

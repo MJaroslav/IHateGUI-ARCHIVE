@@ -1,0 +1,30 @@
+{
+  "imports": [
+    "com.github.mjaroslav.ihategui.model.element.*",
+    "com.github.mjaroslav.ihategui.model.layout.*"
+  ],
+  "class": "LinearLayout",
+  "orientation": "vertical",
+  "elements": [
+    {
+      "class": "Button",
+      "width": "600",
+      "height": "200",
+      "id": "btn"
+    },
+    {
+      "class": "Button",
+      "width": "600",
+      "height": "100",
+      "id": "btn1",
+      "y": 200
+    },
+    {
+      "class": "Button",
+      "width": "600",
+      "height": "100",
+      "y": 300,
+      "id": "btn2"
+    }
+  ]
+}

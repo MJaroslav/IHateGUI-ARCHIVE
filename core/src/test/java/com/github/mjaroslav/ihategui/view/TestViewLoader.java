@@ -36,6 +36,7 @@ public class TestViewLoader {
 
         expected.getElements().add(button);
 
+        Assert.assertEquals("Controllers not equals!", EmptyController.class, loader.getController().getClass());
         Assert.assertEquals(expected, actual);
     }
 
