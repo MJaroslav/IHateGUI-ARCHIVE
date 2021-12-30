@@ -1,12 +1,12 @@
 package com.github.mjaroslav.ihategui.model;
 
 import blue.endless.jankson.JsonArray;
-import blue.endless.jankson.JsonElement;
 import blue.endless.jankson.JsonObject;
 import com.github.mjaroslav.ihategui.util.ReflectionHelper;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import lombok.val;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -43,19 +43,18 @@ public abstract class Layout extends Element {
         super.loadFromJson(object);
         if (object.containsKey("controller"))
             controller = ReflectionHelper.createClassInstance(object.get(String.class, "controller"));
-        JsonElement elements = object.get("elements");
+        val elements = object.get("elements");
         if (elements instanceof JsonArray) {
-            JsonArray array = (JsonArray) elements;
-            array.forEach(arrayElement -> {
-                JsonObject elementObject = (JsonObject) arrayElement;
-                Element element = (Element) ReflectionHelper.createModelElement(elementObject.get(String.class, "class"));
+            val array = (JsonArray) elements;
+            array.stream().map(e -> (JsonObject) e).forEach(obj -> {
+                val element = (Element) ReflectionHelper.createModelElement(obj.get(String.class, "class"));
                 if (element != null) {
-                    element.loadFromJson(elementObject);
-                    element.setParent(this);
-                    this.elements.add(element);
+                    element.loadFromJson(obj);
+                    addElement(element);
                 }
             });
         }
+
     }
 
     @Override

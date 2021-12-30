@@ -1,7 +1,8 @@
 package com.github.mjaroslav.ihategui.model.layout;
 
 import blue.endless.jankson.JsonObject;
-import com.github.mjaroslav.ihategui.model.Dimension;
+import blue.endless.jankson.JsonPrimitive;
+import com.github.mjaroslav.ihategui.model.Element;
 import com.github.mjaroslav.ihategui.model.Layout;
 import com.github.mjaroslav.ihategui.model.Orientation;
 import com.github.mjaroslav.ihategui.util.JsonHelper;
@@ -24,12 +25,12 @@ public class LinearLayout extends Layout {
         super.pack();
         if (orientation == Orientation.HORIZONTAL) {
             var oneWeightWidth = ((getWidth().getValue() - elements.stream()
-                    .filter(e -> e.getWidth().getType() != Dimension.Type.WEIGHT)
+                    .filter(e -> !isElementHasWeight(e))
                     .mapToInt(e -> e.getWidth().getValue()).sum()) /
-                    elements.stream().filter(e -> e.getWidth().getType() == Dimension.Type.WEIGHT)
-                            .mapToInt(e -> e.getWidth().getWeight()).sum());
-            elements.stream().filter(e -> e.getWidth().getType() == Dimension.Type.WEIGHT)
-                    .forEach(e -> e.getWidth().setValue(oneWeightWidth * e.getWidth().getWeight()));
+                    elements.stream().filter(LinearLayout::isElementHasWeight)
+                            .mapToInt(LinearLayout::getElementWeight).sum());
+            elements.stream().filter(LinearLayout::isElementHasWeight)
+                    .forEach(e -> e.getWidth().setValue(oneWeightWidth * getElementWeight(e)));
             var offset = 0;
             for (val e : elements) {
                 e.setX(offset);
@@ -37,17 +38,29 @@ public class LinearLayout extends Layout {
             }
         } else {
             var oneWeightHeight = ((getHeight().getValue() - elements.stream()
-                    .filter(e -> e.getHeight().getType() != Dimension.Type.WEIGHT)
+                    .filter(e -> !isElementHasWeight(e))
                     .mapToInt(e -> e.getHeight().getValue()).sum()) /
-                    elements.stream().filter(e -> e.getHeight().getType() == Dimension.Type.WEIGHT)
-                            .mapToInt(e -> e.getHeight().getWeight()).sum());
-            elements.stream().filter(e -> e.getHeight().getType() == Dimension.Type.WEIGHT)
-                    .forEach(e -> e.getHeight().setValue(oneWeightHeight * e.getHeight().getWeight()));
+                    elements.stream().filter(LinearLayout::isElementHasWeight)
+                            .mapToInt(LinearLayout::getElementWeight).sum());
+            elements.stream().filter(LinearLayout::isElementHasWeight)
+                    .forEach(e -> e.getHeight().setValue(oneWeightHeight * getElementWeight(e)));
             var offset = 0;
             for (val e : elements) {
                 e.setY(offset);
                 offset += e.getHeight().getValue();
             }
         }
+    }
+
+    public static boolean isElementHasWeight(Element element) {
+        return getElementWeight(element) > 0;
+    }
+
+    public static int getElementWeight(Element element) {
+        return element.getExtra().getInt("linearlayout_weight", 0);
+    }
+
+    public static void setElementWeight(Element element, int value) {
+        element.getExtra().put("linearlayout_weight", new JsonPrimitive(value));
     }
 }

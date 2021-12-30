@@ -1,13 +1,13 @@
 package com.github.mjaroslav.ihategui.view;
 
 import blue.endless.jankson.Jankson;
-import blue.endless.jankson.JsonObject;
 import blue.endless.jankson.api.SyntaxError;
 import com.github.mjaroslav.ihategui.model.Layout;
 import com.github.mjaroslav.ihategui.model.element.Button;
 import com.github.mjaroslav.ihategui.model.layout.LinearLayout;
 import com.github.mjaroslav.ihategui.util.ReflectionHelper;
 import lombok.Getter;
+import lombok.val;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -26,8 +26,8 @@ public class ViewLoader {
 
     public void load(InputStream layoutFileStream) {
         try {
-            JsonObject obj = JANKSON.load(layoutFileStream);
-            String containerType = obj.get(String.class, "class");
+            val obj = JANKSON.load(layoutFileStream);
+            val containerType = obj.get(String.class, "class");
             container = (Layout) ReflectionHelper.createModelElement(containerType);
             container.loadFromJson(obj);
         } catch (IOException | ClassCastException | SyntaxError | NullPointerException e) {

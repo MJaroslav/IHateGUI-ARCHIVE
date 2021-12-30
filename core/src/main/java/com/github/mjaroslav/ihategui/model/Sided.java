@@ -1,6 +1,7 @@
 package com.github.mjaroslav.ihategui.model;
 
 import lombok.Data;
+import lombok.val;
 
 import java.util.Arrays;
 
@@ -25,7 +26,7 @@ public class Sided {
     public void loadFromValue(String value) {
         if (value == null)
             return;
-        int[] sides = Arrays.stream(value.split(";")).mapToInt(Integer::parseInt).toArray();
+        val sides = Arrays.stream(value.split(";")).mapToInt(Integer::parseInt).toArray();
         if (sides.length == 1)
             top = bottom = left = right = sides[0];
         else if (sides.length == 2) {

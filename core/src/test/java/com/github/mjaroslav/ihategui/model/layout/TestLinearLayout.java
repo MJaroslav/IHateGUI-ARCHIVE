@@ -25,84 +25,71 @@ public class TestLinearLayout {
     @Test
     public void packVertical() {
         val actualRoot = new RootLayout();
-
-        val actual = new LinearLayout();
-        actual.setOrientation(Orientation.VERTICAL);
+        val actualLayout = new LinearLayout();
+        actualLayout.setOrientation(Orientation.VERTICAL);
         val actualBtn = new Button();
-        actualBtn.setHeight("2w");
+        actualBtn.setHeight("0");
+        LinearLayout.setElementWeight(actualBtn, 2);
         val actualBtn1 = new Button();
-        actualBtn1.setHeight("1w");
+        actualBtn1.setHeight("0");
+        LinearLayout.setElementWeight(actualBtn1, 1);
         val actualBtn2 = new Button();
-        actualBtn2.setHeight("1w");
-        actual.addElements(actualBtn, actualBtn1, actualBtn2);
-        actualRoot.addElement(actual);
-
+        actualBtn2.setHeight("0");
+        LinearLayout.setElementWeight(actualBtn2, 1);
+        actualLayout.addElements(actualBtn, actualBtn1, actualBtn2);
+        actualRoot.addElement(actualLayout);
         actualRoot.pack();
 
-        val expectedRoot = new RootLayout();
-
-        val expected = new LinearLayout();
-        expected.getWidth().setValue(600);
-        expected.getHeight().setValue(400);
-        expected.setOrientation(Orientation.VERTICAL);
         val expectedBtn = new Button();
-        expectedBtn.setHeight("2w");
-        expectedBtn.getWidth().setValue(600);
-        expectedBtn.getHeight().setValue(200);
+        expectedBtn.setWidth("600");
+        expectedBtn.setHeight("200");
+        expectedBtn.setY(0);
         val expectedBtn1 = new Button();
-        expectedBtn1.setHeight("1w");
-        expectedBtn1.getWidth().setValue(600);
-        expectedBtn1.getHeight().setValue(100);
+        expectedBtn1.setWidth("600");
+        expectedBtn1.setHeight("100");
         expectedBtn1.setY(200);
         val expectedBtn2 = new Button();
-        expectedBtn2.setHeight("1w");
-        expectedBtn2.getWidth().setValue(600);
-        expectedBtn2.getHeight().setValue(100);
+        expectedBtn2.setWidth("600");
+        expectedBtn2.setHeight("100");
         expectedBtn2.setY(300);
-        expected.addElements(expectedBtn, expectedBtn1, expectedBtn2);
-        expectedRoot.addElement(expected);
 
-        Assert.assertEquals(expected, actual);
+        LayoutUtils.assertPackedSizeAndPosEquals(expectedBtn, actualBtn);
+        LayoutUtils.assertPackedSizeAndPosEquals(expectedBtn1, actualBtn1);
+        LayoutUtils.assertPackedSizeAndPosEquals(expectedBtn2, actualBtn2);
     }
 
     @Test
     public void packHorizontal() {
         val actualRoot = new RootLayout();
-
-        val actual = new LinearLayout();
+        val actualLayout = new LinearLayout();
         val actualBtn = new Button();
-        actualBtn.setWidth("2w");
+        actualBtn.setWidth("0");
+        LinearLayout.setElementWeight(actualBtn, 2);
         val actualBtn1 = new Button();
-        actualBtn1.setWidth("1w");
+        actualBtn1.setWidth("0");
+        LinearLayout.setElementWeight(actualBtn1, 1);
         val actualBtn2 = new Button();
-        actualBtn2.setWidth("3w");
-        actual.addElements(actualBtn, actualBtn1, actualBtn2);
-        actualRoot.addElement(actual);
-
+        actualBtn2.setWidth("0");
+        LinearLayout.setElementWeight(actualBtn2, 3);
+        actualLayout.addElements(actualBtn, actualBtn1, actualBtn2);
+        actualRoot.addElement(actualLayout);
         actualRoot.pack();
 
-        val expectedRoot = new RootLayout();
-
-        val expected = new LinearLayout();
-        expected.getWidth().setValue(600);
-        expected.getHeight().setValue(400);
         val expectedBtn = new Button();
-        expectedBtn.setWidth("2w");
-        expectedBtn.getWidth().setValue(200);
-        expectedBtn.getHeight().setValue(400);
+        expectedBtn.setWidth("200");
+        expectedBtn.setHeight("400");
+        expectedBtn.setX(0);
         val expectedBtn1 = new Button();
-        expectedBtn1.setWidth("1w");
-        expectedBtn1.getWidth().setValue(100);
-        expectedBtn1.getHeight().setValue(400);
+        expectedBtn1.setWidth("100");
+        expectedBtn1.setHeight("400");
         expectedBtn1.setX(200);
         val expectedBtn2 = new Button();
-        expectedBtn2.setWidth("3w");
-        expectedBtn2.getWidth().setValue(300);
-        expectedBtn2.getHeight().setValue(400);
+        expectedBtn2.setWidth("300");
+        expectedBtn2.setHeight("400");
         expectedBtn2.setX(300);
-        expected.addElements(expectedBtn, expectedBtn1, expectedBtn2);
-        expectedRoot.addElement(expected);
 
-        Assert.assertEquals(expected, actual);
+        LayoutUtils.assertPackedSizeAndPosEquals(expectedBtn, actualBtn);
+        LayoutUtils.assertPackedSizeAndPosEquals(expectedBtn1, actualBtn1);
+        LayoutUtils.assertPackedSizeAndPosEquals(expectedBtn2, actualBtn2);
     }
 }

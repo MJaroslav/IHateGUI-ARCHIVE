@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
+import java.util.Map;
+
 @EqualsAndHashCode(exclude = "parent")
 @ToString(exclude = "parent")
 @Data
@@ -22,6 +24,7 @@ public abstract class Element {
     protected boolean enabled;
     protected boolean visible;
     protected Alignment alignment = Alignment.TOP_LEFT;
+    protected final JsonObject extra = new JsonObject();
 
     //
     // Internal parameters
@@ -72,5 +75,7 @@ public abstract class Element {
         x = JsonHelper.getOrDefault(object, "x", x);
         y = JsonHelper.getOrDefault(object, "y", y);
         alignment = Alignment.fromValue(JsonHelper.getOrDefault(object, "alignment", alignment.toString()));
+        if (object.containsKey("extra"))
+            extra.putAll(object.getObject("extra"));
     }
 }

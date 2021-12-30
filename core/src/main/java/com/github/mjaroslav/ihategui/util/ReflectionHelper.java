@@ -1,6 +1,7 @@
 package com.github.mjaroslav.ihategui.util;
 
 import com.github.mjaroslav.ihategui.view.ViewLoader;
+import lombok.val;
 
 public class ReflectionHelper {
     public static Object createClassInstance(String classType) {
@@ -13,7 +14,7 @@ public class ReflectionHelper {
     }
 
     public static Object createModelElement(String classType) {
-        Class<?> clazz = ViewLoader.tryResolveElementByAlias(classType);
+        val clazz = ViewLoader.tryResolveElementByAlias(classType);
         if (clazz == null)
             return createClassInstance(classType);
         else {
