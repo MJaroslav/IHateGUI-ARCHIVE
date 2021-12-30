@@ -6,8 +6,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-import java.util.Map;
-
 @EqualsAndHashCode(exclude = "parent")
 @ToString(exclude = "parent")
 @Data

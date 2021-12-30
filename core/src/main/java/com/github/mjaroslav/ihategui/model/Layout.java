@@ -41,19 +41,19 @@ public abstract class Layout extends Element {
     @Override
     public void loadFromJson(JsonObject object) {
         super.loadFromJson(object);
-        if (object.containsKey("controller"))
-            controller = ReflectionHelper.createClassInstance(object.get(String.class, "controller"));
-        val elements = object.get("elements");
-        if (elements instanceof JsonArray) {
-            val array = (JsonArray) elements;
-            array.stream().map(e -> (JsonObject) e).forEach(obj -> {
-                val element = (Element) ReflectionHelper.createModelElement(obj.get(String.class, "class"));
-                if (element != null) {
-                    element.loadFromJson(obj);
-                    addElement(element);
-                }
-            });
-        }
+//        if (object.containsKey("controller"))
+//            controller = ReflectionHelper.createClassInstance(object.get(String.class, "controller"));
+//        val elements = object.get("elements");
+//        if (elements instanceof JsonArray) {
+//            val array = (JsonArray) elements;
+//            array.stream().map(e -> (JsonObject) e).forEach(obj -> {
+//                val element = (Element) ReflectionHelper.createModelElement(obj.get(String.class, "class"));
+//                if (element != null) {
+//                    element.loadFromJson(obj);
+//                    addElement(element);
+//                }
+//            });
+//        }
 
     }
 
