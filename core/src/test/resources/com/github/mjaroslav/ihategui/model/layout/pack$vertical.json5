@@ -5,7 +5,8 @@
   ],
   "class": "LinearLayout",
   "orientation": "vertical",
-  "elements": [
+  "alignment": "center",
+  "nodes": [
     {
       "class": "Button",
       "size": "match_parent 0",

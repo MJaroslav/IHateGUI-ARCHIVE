@@ -1,18 +1,20 @@
 package com.github.mjaroslav.ihategui.model;
 
-import blue.endless.jankson.JsonPrimitive;
-import blue.endless.jankson.annotation.Deserializer;
+import lombok.AccessLevel;
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 import lombok.val;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 
 @Data
-public class Sided {
-    protected int top = 0;
-    protected int bottom = 0;
-    protected int left = 0;
-    protected int right = 0;
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+public final class Sided {
+    private int top;
+    private int bottom;
+    private int left;
+    private int right;
 
     public void set(int top, int bottom, int left, int right) {
         this.top = top;
@@ -25,9 +27,7 @@ public class Sided {
         set(value, value, value, value);
     }
 
-    public void set(String value) {
-        if(value == null)
-            return;
+    public void set(@NotNull String value) {
         val sides = Arrays.stream(value.split(";")).mapToInt(Integer::parseInt).toArray();
         if (sides.length == 1)
             top = bottom = left = right = sides[0];
@@ -42,9 +42,8 @@ public class Sided {
         }
     }
 
-    @Deserializer
-    public static Sided deserialize(JsonPrimitive element) {
-        String value = element.asString();
+    @NotNull
+    public static Sided of(@NotNull String value) {
         val result = new Sided();
         result.set(value);
         return result;

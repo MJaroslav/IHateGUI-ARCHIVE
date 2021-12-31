@@ -20,6 +20,8 @@ subprojects {
     idea.module.inheritOutputDirs = true
 
     dependencies {
+        compile "org.jetbrains:annotations:${buildprop.jetbrains_annotations_version}"
+
         compileOnly "org.projectlombok:lombok:${buildprop.lombok_version}"
         annotationProcessor "org.projectlombok:lombok:${buildprop.lombok_version}"
 

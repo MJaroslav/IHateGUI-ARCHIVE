@@ -1,40 +1,62 @@
 package com.github.mjaroslav.ihategui.model;
 
+import com.github.mjaroslav.ihategui.util.ParsingHelper;
+import lombok.AccessLevel;
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
+import lombok.val;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 @Data
-public class Dimension {
-    protected Type type = Type.MATCH_PARENT;
-    protected int value = 0;
-    protected float percent;
+public final class Dimension {
+    @NotNull
+    private Type type = Type.MATCH_PARENT;
+    @NotNull
+    private String value = type.toString();
 
-    public void loadFromValue(String value) {
-        if (value == null)
-            return;
-        type = Type.fromValue(value);
-        this.value = type == Type.VALUE ? Integer.parseInt(value) : this.value;
-        percent = type == Type.PERCENT ? Float.parseFloat(value.substring(0, value.length() - 1)) : percent;
+    public int asConstant() {
+        return Integer.parseInt(value);
+    }
+
+    public float asPercent() {
+        return Float.parseFloat(value.substring(0, value.length() - 1));
+    }
+
+    public boolean isMatchingParent() {
+        return type == Type.MATCH_PARENT;
+    }
+
+    public boolean isMatchingContent() {
+        return type == Type.MATCH_CONTENT;
+    }
+
+    public boolean isConstant() {
+        return type == Type.CONSTANT;
+    }
+
+    public boolean isPercent() {
+        return type == Type.PERCENT;
+    }
+
+    public void set(@NotNull String value) {
+        type = Type.of(value);
+        this.value = value;
+    }
+
+    public static Dimension of(@NotNull String value) {
+        val result = new Dimension();
+        result.set(value);
+        return result;
     }
 
     public enum Type {
-        MATCH_PARENT, MATCH_CONTENT, VALUE, PERCENT;
+        MATCH_PARENT, MATCH_CONTENT, CONSTANT, PERCENT;
 
-        public static Type fromValue(String value) {
-            try {
-                return valueOf(value.toUpperCase());
-            } catch (IllegalArgumentException ignored) {
-                try {
-                    if (value.endsWith("%")) {
-                        Float.parseFloat(value.substring(0, value.length() - 1));
-                        return PERCENT;
-                    } else {
-                        Integer.parseInt(value);
-                        return VALUE;
-                    }
-                } catch (NumberFormatException ignored1) {
-                    return MATCH_PARENT;
-                }
-            }
+        @NotNull
+        public static Type of(@Nullable String value) {
+            return ParsingHelper.parseTextAndNumericEnum(value, MATCH_PARENT, CONSTANT, PERCENT, Type::valueOf);
         }
     }
 }

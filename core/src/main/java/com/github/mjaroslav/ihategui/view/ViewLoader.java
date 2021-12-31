@@ -4,8 +4,9 @@ import blue.endless.jankson.Jankson;
 import blue.endless.jankson.JsonArray;
 import blue.endless.jankson.JsonObject;
 import blue.endless.jankson.JsonPrimitive;
-import com.github.mjaroslav.ihategui.model.Element;
-import com.github.mjaroslav.ihategui.model.Layout;
+import com.github.mjaroslav.ihategui.api.model.Container;
+import com.github.mjaroslav.ihategui.api.model.Node;
+import com.github.mjaroslav.ihategui.api.model.impl.Layout;
 import com.github.mjaroslav.ihategui.util.ReflectionHelper;
 import lombok.Getter;
 import lombok.val;
@@ -53,7 +54,7 @@ public class ViewLoader {
             controller = ReflectionHelper.createClassInstance(obj.get(String.class, "controller"));
             obj.remove("controller");
         }
-        container = (Layout) fromJson(obj);
+        container = (Layout) fromJson(null, obj);
     }
 
     public void importToDeserializer(String importLine) throws Exception {
@@ -86,11 +87,14 @@ public class ViewLoader {
         }
     }
 
-    public Element fromJson(JsonObject object) throws Exception {
+    public Node fromJson(Container parent, JsonObject object) throws Exception {
         val clazz = imported.get(object.get(String.class, "class"));
         object.remove("class");
         object.put("loader", new JsonPrimitive(id));
-        return (Element) JANKSON.fromJsonCarefully(object, clazz);
+        val result = (Node) JANKSON.fromJsonCarefully(object, clazz);
+        if (parent != null)
+            result.setParent(parent);
+        return result;
     }
 
     public static ViewLoader getLoader(String id) {

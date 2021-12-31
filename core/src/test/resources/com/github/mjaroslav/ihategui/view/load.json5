@@ -6,13 +6,13 @@
   ],
   "controller": "com.github.mjaroslav.ihategui.view.TestViewLoader$EmptyController",
   "orientation": "vertical",
-  "elements": [
+  "nodes": [
     {
       "class": "Button",
       "text": "test",
       "margin": "10;15;5;5",
       "padding": "1",
-      "enable": false,
+      "enabled": false,
       "id": "btn1"
     }
   ]

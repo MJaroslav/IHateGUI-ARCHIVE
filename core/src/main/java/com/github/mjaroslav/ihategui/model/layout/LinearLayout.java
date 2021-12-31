@@ -3,12 +3,13 @@ package com.github.mjaroslav.ihategui.model.layout;
 import blue.endless.jankson.JsonObject;
 import blue.endless.jankson.JsonPrimitive;
 import blue.endless.jankson.annotation.Deserializer;
+import com.github.mjaroslav.ihategui.api.model.Node;
+import com.github.mjaroslav.ihategui.api.model.impl.Layout;
 import com.github.mjaroslav.ihategui.model.Alignment;
-import com.github.mjaroslav.ihategui.model.Element;
-import com.github.mjaroslav.ihategui.model.Layout;
 import com.github.mjaroslav.ihategui.model.Orientation;
 import com.github.mjaroslav.ihategui.util.JsonHelper;
 import lombok.*;
+import org.jetbrains.annotations.NotNull;
 
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
@@ -17,7 +18,7 @@ public class LinearLayout extends Layout {
     protected Orientation orientation = Orientation.HORIZONTAL;
 
     @Override
-    public void loadFromJson(JsonObject object) throws Exception {
+    public void loadFromJson(@NotNull JsonObject object) throws Exception {
         super.loadFromJson(object);
         orientation = Orientation.fromName(JsonHelper.getOrDefault(object, "orientation", orientation.toString()));
     }
@@ -32,56 +33,65 @@ public class LinearLayout extends Layout {
     @Override
     public void pack() {
         super.pack();
+        nodes.forEach(Node::calculateContentSize);
+        nodes.forEach(Node::calculatePreferredSize);
         if (orientation == Orientation.HORIZONTAL) {
-            var oneWeightWidth = (getClientWidth() - elements.stream()
-                    .filter(e -> !isElementHasWeight(e))
-                    .mapToInt(Element::getClientWidth).sum()) /
-                    elements.stream().filter(LinearLayout::isElementHasWeight)
-                            .mapToInt(LinearLayout::getElementWeight).sum();
-            elements.stream().filter(LinearLayout::isElementHasWeight)
-                    .forEach(e -> e.setClientWidth(oneWeightWidth * getElementWeight(e)));
+            var oneWeightWidth = (this.getTotalWidth() - nodes.stream()
+                    .filter(node -> !isNodeHasWeight(node))
+                    .mapToInt(Node::getTotalWidth).sum()) /
+                    nodes.stream().filter(LinearLayout::isNodeHasWeight)
+                            .mapToInt(LinearLayout::getNodeWeight).sum();
+            nodes.stream().filter(LinearLayout::isNodeHasWeight)
+                    .forEach(node -> node.setTotalWidth(oneWeightWidth * getNodeWeight(node)));
             var offset = 0;
-            for (val e : elements) {
-                e.setX(offset);
-                offset += e.getClientWidth();
+            for (val node : nodes) {
+                node.setX(offset);
+                offset += node.getTotalWidth();
                 if (alignment == Alignment.TOP)
-                    e.setY(0);
+                    node.setY(0);
                 else if (alignment == Alignment.BOTTOM)
-                    e.setY(getClientHeight() - e.getClientHeight());
+                    node.setY(this.getTotalHeight() - node.getTotalHeight());
                 else if (alignment == Alignment.CENTER)
-                    e.setY((getClientHeight() - e.getClientHeight()) / 2);
+                    node.setY((this.getTotalHeight() - node.getTotalHeight()) / 2);
             }
         } else {
-            var oneWeightHeight = (getClientHeight() - elements.stream()
-                    .filter(e -> !isElementHasWeight(e))
-                    .mapToInt(Element::getClientHeight).sum()) /
-                    elements.stream().filter(LinearLayout::isElementHasWeight)
-                            .mapToInt(LinearLayout::getElementWeight).sum();
-            elements.stream().filter(LinearLayout::isElementHasWeight)
-                    .forEach(e -> e.setClientHeight(oneWeightHeight * getElementWeight(e)));
+            var oneWeightHeight = (this.getTotalHeight() - nodes.stream()
+                    .filter(node -> !isNodeHasWeight(node))
+                    .mapToInt(Node::getTotalHeight).sum()) /
+                    nodes.stream().filter(LinearLayout::isNodeHasWeight)
+                            .mapToInt(LinearLayout::getNodeWeight).sum();
+            nodes.stream().filter(LinearLayout::isNodeHasWeight)
+                    .forEach(node -> node.setTotalHeight(oneWeightHeight * getNodeWeight(node)));
             var offset = 0;
-            for (val e : elements) {
-                e.setY(offset);
-                offset += e.getClientHeight();
+            for (val node : nodes) {
+                node.setY(offset);
+                offset += node.getTotalHeight();
                 if (alignment == Alignment.TOP)
-                    e.setX(0);
+                    node.setX(0);
                 else if (alignment == Alignment.BOTTOM)
-                    e.setX(getClientWidth() - e.getClientWidth());
+                    node.setX(this.getTotalWidth() - node.getTotalWidth());
                 else if (alignment == Alignment.CENTER)
-                    e.setX((getClientWidth() - e.getClientWidth()) / 2);
+                    node.setX((this.getTotalWidth() - node.getTotalWidth()) / 2);
             }
         }
     }
 
-    public static boolean isElementHasWeight(Element element) {
-        return getElementWeight(element) > 0;
+
+    @Override
+    public void calculateContentSize() {
+        contentWidth = nodes.stream().mapToInt(Node::getTotalWidth).sum();
+        contentHeight = nodes.stream().mapToInt(Node::getTotalHeight).sum();
     }
 
-    public static int getElementWeight(Element element) {
-        return element.getExtra().getInt("linearlayout_weight", 0);
+    public static boolean isNodeHasWeight(Node node) {
+        return getNodeWeight(node) > 0;
     }
 
-    public static void setElementWeight(Element element, int value) {
-        element.getExtra().put("linearlayout_weight", new JsonPrimitive(value));
+    public static int getNodeWeight(Node node) {
+        return node.getExtraAttribute("linearlayout_weight", Integer.class, 0);
+    }
+
+    public static void setNodeWeight(Node node, int value) {
+        node.setExtraAttribute("linearlayout_weight", new JsonPrimitive(value));
     }
 }

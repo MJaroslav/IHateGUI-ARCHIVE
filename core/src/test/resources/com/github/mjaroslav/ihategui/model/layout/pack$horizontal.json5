@@ -4,7 +4,8 @@
     "com.github.mjaroslav.ihategui.model.layout.*"
   ],
   "class": "LinearLayout",
-  "elements": [
+  "alignment": "center",
+  "nodes": [
     {
       "class": "Button",
       "size": "0 match_parent",
