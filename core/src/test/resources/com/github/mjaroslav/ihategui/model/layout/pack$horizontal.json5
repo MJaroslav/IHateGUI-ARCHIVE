@@ -13,7 +13,7 @@
     },
     {
       "class": "Button",
-      "size": "0 match_parent",
+      "size": "0 50%",
       "id": "btn1",
       "#linearlayout_weight": 1
     },

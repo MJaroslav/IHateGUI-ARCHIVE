@@ -3,6 +3,7 @@ package com.github.mjaroslav.ihategui.model.layout;
 import blue.endless.jankson.JsonObject;
 import blue.endless.jankson.JsonPrimitive;
 import blue.endless.jankson.annotation.Deserializer;
+import com.github.mjaroslav.ihategui.model.Alignment;
 import com.github.mjaroslav.ihategui.model.Element;
 import com.github.mjaroslav.ihategui.model.Layout;
 import com.github.mjaroslav.ihategui.model.Orientation;
@@ -43,6 +44,12 @@ public class LinearLayout extends Layout {
             for (val e : elements) {
                 e.setX(offset);
                 offset += e.getClientWidth();
+                if (alignment == Alignment.TOP)
+                    e.setY(0);
+                else if (alignment == Alignment.BOTTOM)
+                    e.setY(getClientHeight() - e.getClientHeight());
+                else if (alignment == Alignment.CENTER)
+                    e.setY((getClientHeight() - e.getClientHeight()) / 2);
             }
         } else {
             var oneWeightHeight = (getClientHeight() - elements.stream()
@@ -56,6 +63,12 @@ public class LinearLayout extends Layout {
             for (val e : elements) {
                 e.setY(offset);
                 offset += e.getClientHeight();
+                if (alignment == Alignment.TOP)
+                    e.setX(0);
+                else if (alignment == Alignment.BOTTOM)
+                    e.setX(getClientWidth() - e.getClientWidth());
+                else if (alignment == Alignment.CENTER)
+                    e.setX((getClientWidth() - e.getClientWidth()) / 2);
             }
         }
     }

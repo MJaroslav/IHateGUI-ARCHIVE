@@ -32,8 +32,9 @@ public class TestLinearLayout {
         val expectedBtn = new Button();
         expectedBtn.setClientSize(600, 200);
         val expectedBtn1 = new Button();
-        expectedBtn1.setClientSize(600, 100);
+        expectedBtn1.setClientSize(300, 100);
         expectedBtn1.setY(200);
+        expectedBtn1.setX(150);
         val expectedBtn2 = new Button();
         expectedBtn2.setClientSize(600, 100);
         expectedBtn2.setY(300);
@@ -58,8 +59,9 @@ public class TestLinearLayout {
         val expectedBtn = new Button();
         expectedBtn.setClientSize(200, 400);
         val expectedBtn1 = new Button();
-        expectedBtn1.setClientSize(100, 400);
+        expectedBtn1.setClientSize(100, 200);
         expectedBtn1.setX(200);
+        expectedBtn1.setY(100);
         val expectedBtn2 = new Button();
         expectedBtn2.setClientSize(300, 400);
         expectedBtn2.setX(300);

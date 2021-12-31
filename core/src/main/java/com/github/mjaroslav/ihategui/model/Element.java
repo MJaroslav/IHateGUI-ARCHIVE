@@ -8,6 +8,8 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import lombok.val;
 
+import java.util.Objects;
+
 @EqualsAndHashCode(exclude = {"loader", "parent", "clientWidth", "clientHeight"})
 @ToString(exclude = {"loader", "parent", "clientWidth", "clientHeight"})
 @Data
@@ -22,7 +24,7 @@ public abstract class Element {
     protected String id = "";
     protected boolean enabled;
     protected boolean visible;
-    protected Alignment alignment = Alignment.TOP_LEFT;
+    protected Alignment alignment = Alignment.CENTER;
     protected final JsonObject extra = new JsonObject();
 
     //
@@ -67,15 +69,14 @@ public abstract class Element {
 
     public void packToParent() {
         if (parent != null) {
-            if (getWidth().getType() == Dimension.Type.MATCH_PARENT) {
+            if (width.type == Dimension.Type.MATCH_PARENT)
                 clientWidth = parent.clientWidth;
-                getWidth().setValue(parent.getWidth().getValue());
-                setX(0);
-            }
-            if (getHeight().getType() == Dimension.Type.MATCH_PARENT) {
+            else if (width.type == Dimension.Type.PERCENT)
+                clientWidth = (int) (parent.clientWidth * width.percent / 100);
+            if (height.type == Dimension.Type.MATCH_PARENT)
                 clientHeight = parent.clientHeight;
-                setY(0);
-            }
+            else if (height.type == Dimension.Type.PERCENT)
+                clientHeight = (int) (parent.clientHeight * height.percent / 100);
         }
     }
 
@@ -88,7 +89,7 @@ public abstract class Element {
         width.loadFromValue(object.get(String.class, "width"));
         height.loadFromValue(object.get(String.class, "height"));
         if (object.containsKey("size")) {
-            val size = object.get(String.class, "size").split(" ");
+            val size = Objects.requireNonNull(object.get(String.class, "size")).split(" ");
             width.loadFromValue(size[0]);
             height.loadFromValue(size[1]);
         }

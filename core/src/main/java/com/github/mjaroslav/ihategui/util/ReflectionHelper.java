@@ -22,26 +22,6 @@ public class ReflectionHelper {
         while (URLs.hasMoreElements())
             getClassesInPackage(result, URLs.nextElement(), packageName, tree);
         return result;
-//        val a = Thread.currentThread().getContextClassLoader().getResources(packageName);
-//        while (a.hasMoreElements()) {
-//            val u = a.nextElement();
-//        }
-//        var classLoader = Thread.currentThread().getContextClassLoader();
-//        while (classLoader != null) {
-//            getClassesInPackage(result, classLoader, packageName, tree);
-//            classLoader = classLoader.getParent();
-//        }
-//        classLoader = ReflectionHelper.class.getClassLoader();
-//        while (classLoader != null) {
-//            getClassesInPackage(result, classLoader, packageName, tree);
-//            classLoader = classLoader.getParent();
-//        }
-//        classLoader = ClassLoader.getSystemClassLoader();
-//        while (classLoader != null) {
-//            getClassesInPackage(result, classLoader, packageName, tree);
-//            classLoader = classLoader.getParent();
-//        }
-//        return result;
     }
 
     private static void getClassesInPackage(Set<Class<?>> result, URL packageURL, String packageName, boolean tree) throws Exception {
