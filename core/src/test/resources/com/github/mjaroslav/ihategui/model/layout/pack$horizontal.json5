@@ -7,19 +7,19 @@
   "elements": [
     {
       "class": "Button",
-      "width": "0",
+      "size": "0 match_parent",
       "id": "btn",
       "#linearlayout_weight": 2
     },
     {
       "class": "Button",
-      "width": "0",
+      "size": "0 match_parent",
       "id": "btn1",
       "#linearlayout_weight": 1
     },
     {
       "class": "Button",
-      "width": "0",
+      "size": "0 match_parent",
       "id": "btn2",
       "#linearlayout_weight": 3
     }

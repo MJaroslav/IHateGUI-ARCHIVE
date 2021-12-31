@@ -11,6 +11,7 @@ import lombok.val;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
@@ -64,23 +65,16 @@ public abstract class Layout extends Element {
     }
 
     @Override
-    public void loadFromJson(JsonObject object) {
+    public void loadFromJson(JsonObject object) throws Exception {
         super.loadFromJson(object);
         val elements = object.get("elements");
         if (elements instanceof JsonArray) {
             val array = (JsonArray) elements;
-            array.stream().map(e -> (JsonObject) e).forEach(obj -> {
-                Element element = null;
-                try {
-                    element = loader.fromJson(obj);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                if (element != null) {
-                    element.loadFromJson(obj);
-                    addElement(element);
-                }
-            });
+            for (val obj : array.stream().map(e -> (JsonObject) e).collect(Collectors.toList())) {
+                Element element = loader.fromJson(obj);
+                element.loadFromJson(obj);
+                addElement(element);
+            }
         }
 
     }

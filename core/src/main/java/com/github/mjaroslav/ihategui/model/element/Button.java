@@ -16,13 +16,13 @@ public class Button extends Element {
     protected String text = "";
 
     @Override
-    public void loadFromJson(JsonObject object) {
+    public void loadFromJson(JsonObject object) throws Exception {
         super.loadFromJson(object);
         text = JsonHelper.getOrDefault(object, "text", text);
     }
 
     @Deserializer
-    public static Button deserialize(JsonObject object) {
+    public static Button deserialize(JsonObject object) throws Exception {
         val result = new Button();
         result.loadFromJson(object);
         return result;

@@ -16,13 +16,13 @@ public class LinearLayout extends Layout {
     protected Orientation orientation = Orientation.HORIZONTAL;
 
     @Override
-    public void loadFromJson(JsonObject object) {
+    public void loadFromJson(JsonObject object) throws Exception {
         super.loadFromJson(object);
         orientation = Orientation.fromName(JsonHelper.getOrDefault(object, "orientation", orientation.toString()));
     }
 
     @Deserializer
-    public static LinearLayout deserialize(JsonObject object) {
+    public static LinearLayout deserialize(JsonObject object) throws Exception {
         val result = new LinearLayout();
         result.loadFromJson(object);
         return result;
@@ -32,30 +32,30 @@ public class LinearLayout extends Layout {
     public void pack() {
         super.pack();
         if (orientation == Orientation.HORIZONTAL) {
-            var oneWeightWidth = ((getWidth().getValue() - elements.stream()
+            var oneWeightWidth = (getClientWidth() - elements.stream()
                     .filter(e -> !isElementHasWeight(e))
-                    .mapToInt(e -> e.getWidth().getValue()).sum()) /
+                    .mapToInt(Element::getClientWidth).sum()) /
                     elements.stream().filter(LinearLayout::isElementHasWeight)
-                            .mapToInt(LinearLayout::getElementWeight).sum());
+                            .mapToInt(LinearLayout::getElementWeight).sum();
             elements.stream().filter(LinearLayout::isElementHasWeight)
-                    .forEach(e -> e.getWidth().setValue(oneWeightWidth * getElementWeight(e)));
+                    .forEach(e -> e.setClientWidth(oneWeightWidth * getElementWeight(e)));
             var offset = 0;
             for (val e : elements) {
                 e.setX(offset);
-                offset += e.getWidth().getValue();
+                offset += e.getClientWidth();
             }
         } else {
-            var oneWeightHeight = ((getHeight().getValue() - elements.stream()
+            var oneWeightHeight = (getClientHeight() - elements.stream()
                     .filter(e -> !isElementHasWeight(e))
-                    .mapToInt(e -> e.getHeight().getValue()).sum()) /
+                    .mapToInt(Element::getClientHeight).sum()) /
                     elements.stream().filter(LinearLayout::isElementHasWeight)
-                            .mapToInt(LinearLayout::getElementWeight).sum());
+                            .mapToInt(LinearLayout::getElementWeight).sum();
             elements.stream().filter(LinearLayout::isElementHasWeight)
-                    .forEach(e -> e.getHeight().setValue(oneWeightHeight * getElementWeight(e)));
+                    .forEach(e -> e.setClientHeight(oneWeightHeight * getElementWeight(e)));
             var offset = 0;
             for (val e : elements) {
                 e.setY(offset);
-                offset += e.getHeight().getValue();
+                offset += e.getClientHeight();
             }
         }
     }

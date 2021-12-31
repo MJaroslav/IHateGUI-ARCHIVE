@@ -1,7 +1,7 @@
 package com.github.mjaroslav.ihategui.model.layout;
 
-import com.github.mjaroslav.ihategui.model.Dimension;
 import com.github.mjaroslav.ihategui.model.Layout;
+import com.github.mjaroslav.ihategui.model.element.Button;
 import com.github.mjaroslav.ihategui.view.ViewLoader;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -13,17 +13,14 @@ public class TestLinearLayout {
     @Data
     public static class RootLayout extends Layout {
         public RootLayout() {
-            getWidth().setValue(600);
-            getWidth().setType(Dimension.Type.VALUE);
-            getHeight().setValue(400);
-            getHeight().setType(Dimension.Type.VALUE);
+            setClientSize(600, 400);
         }
     }
 
     @Test
     public void pack$vertical() throws Exception {
         val loaderActual = new ViewLoader();
-        loaderActual.load(TestLinearLayout.class.getResourceAsStream("pack$vertical_actual.json5"));
+        loaderActual.load(TestLinearLayout.class.getResourceAsStream("pack$vertical.json5"));
         val actualRoot = new RootLayout();
         val actualLayout = loaderActual.getContainer();
         actualRoot.addElement(actualLayout);
@@ -32,12 +29,14 @@ public class TestLinearLayout {
         val actualBtn1 = actualLayout.findElementById("btn1");
         val actualBtn2 = actualLayout.findElementById("btn2");
 
-        val loaderExpected = new ViewLoader();
-        loaderExpected.load(TestLinearLayout.class.getResourceAsStream("pack$vertical_expected.json5"));
-        val expectedLayout = (LinearLayout) loaderExpected.getContainer();
-        val expectedBtn = expectedLayout.findElementById("btn");
-        val expectedBtn1 = expectedLayout.findElementById("btn1");
-        val expectedBtn2 = expectedLayout.findElementById("btn2");
+        val expectedBtn = new Button();
+        expectedBtn.setClientSize(600, 200);
+        val expectedBtn1 = new Button();
+        expectedBtn1.setClientSize(600, 100);
+        expectedBtn1.setY(200);
+        val expectedBtn2 = new Button();
+        expectedBtn2.setClientSize(600, 100);
+        expectedBtn2.setY(300);
 
         LayoutUtils.assertPackedSizeAndPosEquals(expectedBtn, actualBtn);
         LayoutUtils.assertPackedSizeAndPosEquals(expectedBtn1, actualBtn1);
@@ -47,7 +46,7 @@ public class TestLinearLayout {
     @Test
     public void pack$horizontal() throws Exception {
         val loaderActual = new ViewLoader();
-        loaderActual.load(TestLinearLayout.class.getResourceAsStream("pack$horizontal_actual.json5"));
+        loaderActual.load(TestLinearLayout.class.getResourceAsStream("pack$horizontal.json5"));
         val actualRoot = new RootLayout();
         val actualLayout = loaderActual.getContainer();
         actualRoot.addElement(actualLayout);
@@ -56,12 +55,14 @@ public class TestLinearLayout {
         val actualBtn1 = actualLayout.findElementById("btn1");
         val actualBtn2 = actualLayout.findElementById("btn2");
 
-        val loaderExpected = new ViewLoader();
-        loaderExpected.load(TestLinearLayout.class.getResourceAsStream("pack$horizontal_expected.json5"));
-        val expectedLayout = (LinearLayout) loaderExpected.getContainer();
-        val expectedBtn = expectedLayout.findElementById("btn");
-        val expectedBtn1 = expectedLayout.findElementById("btn1");
-        val expectedBtn2 = expectedLayout.findElementById("btn2");
+        val expectedBtn = new Button();
+        expectedBtn.setClientSize(200, 400);
+        val expectedBtn1 = new Button();
+        expectedBtn1.setClientSize(100, 400);
+        expectedBtn1.setX(200);
+        val expectedBtn2 = new Button();
+        expectedBtn2.setClientSize(300, 400);
+        expectedBtn2.setX(300);
 
         LayoutUtils.assertPackedSizeAndPosEquals(expectedBtn, actualBtn);
         LayoutUtils.assertPackedSizeAndPosEquals(expectedBtn1, actualBtn1);

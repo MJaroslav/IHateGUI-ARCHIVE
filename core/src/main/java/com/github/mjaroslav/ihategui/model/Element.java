@@ -6,30 +6,32 @@ import com.github.mjaroslav.ihategui.view.ViewLoader;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import lombok.val;
 
-@EqualsAndHashCode(exclude = {"loader", "parent"})
-@ToString(exclude = {"loader", "parent"})
+@EqualsAndHashCode(exclude = {"loader", "parent", "clientWidth", "clientHeight"})
+@ToString(exclude = {"loader", "parent", "clientWidth", "clientHeight"})
 @Data
 public abstract class Element {
     //
     // View parameters
     //
-    protected Dimension width = new Dimension();
-    protected Dimension height = new Dimension();
-    protected int x, y;
-    protected Sided padding = new Sided();
-    protected Sided margin = new Sided();
+    protected final Dimension width = new Dimension();
+    protected final Dimension height = new Dimension();
+    protected final Sided padding = new Sided();
+    protected final Sided margin = new Sided();
     protected String id = "";
     protected boolean enabled;
     protected boolean visible;
     protected Alignment alignment = Alignment.TOP_LEFT;
-    protected JsonObject extra = new JsonObject();
+    protected final JsonObject extra = new JsonObject();
 
     //
     // Internal parameters
     //
     protected Layout parent;
     protected ViewLoader loader;
+    protected int clientWidth, clientHeight;
+    protected int x, y;
 
     public void setWidth(String value) {
         width.loadFromValue(value);
@@ -47,14 +49,31 @@ public abstract class Element {
         margin.set(value);
     }
 
+    public void setPos(int x, int y) {
+        this.x = x;
+        this.y = y;
+    }
+
+    public void setSize(String size) {
+        val split = size.split(" ");
+        width.loadFromValue(split[0]);
+        height.loadFromValue(split[1]);
+    }
+
+    public void setClientSize(int width, int height) {
+        clientWidth = width;
+        clientHeight = height;
+    }
+
     public void packToParent() {
         if (parent != null) {
             if (getWidth().getType() == Dimension.Type.MATCH_PARENT) {
+                clientWidth = parent.clientWidth;
                 getWidth().setValue(parent.getWidth().getValue());
                 setX(0);
             }
             if (getHeight().getType() == Dimension.Type.MATCH_PARENT) {
-                getHeight().setValue(parent.getHeight().getValue());
+                clientHeight = parent.clientHeight;
                 setY(0);
             }
         }
@@ -64,17 +83,20 @@ public abstract class Element {
         packToParent();
     }
 
-    public void loadFromJson(JsonObject object) {
+    public void loadFromJson(JsonObject object) throws Exception {
         loader = ViewLoader.getLoader(object.get(String.class, "loader"));
         width.loadFromValue(object.get(String.class, "width"));
         height.loadFromValue(object.get(String.class, "height"));
+        if (object.containsKey("size")) {
+            val size = object.get(String.class, "size").split(" ");
+            width.loadFromValue(size[0]);
+            height.loadFromValue(size[1]);
+        }
         padding.set(object.get(String.class, "padding"));
         margin.set(object.get(String.class, "margin"));
         id = JsonHelper.getOrDefault(object, "id", id);
         enabled = JsonHelper.getOrDefault(object, "enabled", enabled);
         visible = JsonHelper.getOrDefault(object, "visible", visible);
-        x = JsonHelper.getOrDefault(object, "x", x);
-        y = JsonHelper.getOrDefault(object, "y", y);
         alignment = Alignment.fromValue(JsonHelper.getOrDefault(object, "alignment", alignment.toString()));
         object.entrySet().stream().filter(e -> e.getKey().startsWith("#"))
                 .forEach(e -> extra.put(e.getKey().substring(1), e.getValue()));
