@@ -1,6 +1,5 @@
 package com.github.mjaroslav.ihategui.model;
 
-import com.github.mjaroslav.ihategui.api.model.Node;
 import com.github.mjaroslav.ihategui.util.ParsingHelper;
 import lombok.*;
 import org.jetbrains.annotations.NotNull;
@@ -35,16 +34,6 @@ public final class TextSize {
 
     public float asPercent() {
         return Float.parseFloat(value.substring(0, value.length() - 1));
-    }
-
-    public int calculateSize(Node holder) {
-        if (isDefault())
-            return DEFAULT_SIZE;
-        else if (isPercent()) {
-            val root = holder.getRoot();
-            val $100 = root.getRootWidth() / root.getRootWidth() * DEFAULT_SIZE;
-            return (int) (asPercent() / 100 * $100);
-        } else return asConstant();
     }
 
     public void set(@NotNull String value) {

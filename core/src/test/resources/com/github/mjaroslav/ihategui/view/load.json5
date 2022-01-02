@@ -4,16 +4,16 @@
     "com.github.mjaroslav.ihategui.model.element.*",
     "com.github.mjaroslav.ihategui.model.layout.*"
   ],
-  "controller": "com.github.mjaroslav.ihategui.view.TestViewLoader$EmptyController",
-  "orientation": "vertical",
+  "controller": "com.github.mjaroslav.ihategui.controller.ControllerForTests",
+  "orientation": "VERTICAL",
   "nodes": [
     {
       "class": "Button",
       "text": "test",
-      "margin": "10;15;5;5",
-      "padding": "1",
-      "enabled": false,
+      "attribute_test": 1,
+      "enable": false,
       "id": "btn1"
     }
-  ]
+  ],
+  "visible": false
 }

@@ -1,125 +1,122 @@
 package com.github.mjaroslav.ihategui.api.model;
 
-import blue.endless.jankson.JsonElement;
-import blue.endless.jankson.JsonObject;
-import com.github.mjaroslav.ihategui.model.Alignment;
-import com.github.mjaroslav.ihategui.model.Dimension;
-import com.github.mjaroslav.ihategui.model.Sided;
-import com.github.mjaroslav.ihategui.view.ViewLoader;
-import lombok.val;
+import com.github.mjaroslav.ihategui.util.Pair.IntPair;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public interface Node {
-    void pack();
-
-    void calculatePreferredSize();
-
-    void calculateContentSize();
-
-    void loadFromJson(@NotNull JsonObject object) throws Exception;
-
-    void setWidth(@NotNull Dimension width);
-
-    @NotNull
-    Dimension getWidth();
-
-    void setWidthStr(@NotNull String width);
-
-    void setHeight(@NotNull Dimension height);
-
-    @NotNull
-    Dimension getHeight();
-
-    void setHeightStr(@NotNull String height);
-
-    void setSize(@NotNull Dimension width, @NotNull Dimension height);
-
-    void setSize(@NotNull String size);
-
-    void setMarginStr(@NotNull String margin);
-
-    void setMargin(@NotNull Sided margin);
-
-    @NotNull
-    Sided getMargin();
-
-    void setPaddingStr(@NotNull String padding);
-
-    void setPadding(@NotNull Sided padding);
-
-    @NotNull
-    Sided getPadding();
-
+    // =========================
+    // Node properties
+    // =========================
     @Nullable
     String getId();
 
     void setId(@Nullable String id);
 
-    boolean isEnabled();
+    boolean isEnable();
 
-    void setEnabled(boolean enabled);
+    void setEnable(boolean enable);
 
     boolean isVisible();
 
     void setVisible(boolean visible);
 
+    // =========================
+    // Node position
+    // =========================
     @NotNull
-    Alignment getAlignment();
-
-    void setAlignment(@NotNull Alignment alignment);
-
-    void setAlignmentStr(@NotNull String value);
-
-    int getX();
-
-    int getY();
-
-    void setX(int x);
-
-    void setY(int y);
+    IntPair getPosition();
 
     void setPosition(int x, int y);
 
-    int getTotalWidth();
+    void setPosition(@NotNull IntPair position);
 
-    void setTotalWidth(int totalWidth);
+    // =========================
+    // Node size
+    // =========================
+    @NotNull
+    IntPair getSize();
 
-    int getTotalHeight();
+    void setSize(int width, int height);
 
-    void setTotalHeight(int totalHeight);
+    void setSize(@NotNull IntPair size);
 
-    int getContentWidth();
-
-    void setContentWidth(int contentWidth);
-
-    int getContentHeight();
-
-    void setContentHeight(int contentHeight);
-
+    // =========================
+    // Technical stuff
+    // =========================
     @Nullable
     Container getParent();
 
     void setParent(@NotNull Container parent);
 
-    ViewLoader getLoader();
-
-    void setLoader(@NotNull ViewLoader loader);
-
-    @NotNull
-    Root getRoot();
-
-    void setRoot(@NotNull Root root);
-
     @Nullable
-    Node findNodeById(@NotNull String id);
+    RootContainer getRoot();
 
+    void setRoot(@Nullable RootContainer root);
+
+    boolean isDirty();
+
+    void setDirty(boolean dirty);
+
+    // =========================
+    // Attributes
+    // =========================
     @NotNull
-    JsonObject getExtraAttributes();
+    Map<String, Object> getAttributes();
 
-    void setExtraAttribute(@NotNull String key, @Nullable JsonElement value);
+    void setAttribute(@NotNull String key, @NotNull Object value);
 
-    @Nullable <T> T getExtraAttribute(@NotNull String key, Class<T> type);
+    void deleteAttribute(@NotNull String key);
 
-    @NotNull <T> T getExtraAttribute(@NotNull String key, Class<T> type, T defaultObject);
+    @Nullable <T> T getAttribute(@NotNull String key);
+
+    @NotNull <T> T getAttribute(@NotNull String key, T defaultValue);
+
+    // =========================
+    // Graphics
+    // =========================
+    void draw(int mouseX, int mouseY, float partialTicks);
+
+    // Required for builders
+    static void setAllParams(@NotNull Node node, @Nullable IntPair size,
+                             @Nullable IntPair position, boolean enable, boolean visible,
+                             @Nullable String id, @Nullable Container parent, @Nullable RootContainer root,
+                             @Nullable Map<String, Object> attributes) {
+        if (size != null)
+            node.setSize(size);
+        if (position != null)
+            node.setPosition(position);
+        node.setEnable(enable);
+        node.setVisible(visible);
+        node.setId(id);
+        if (parent != null)
+            node.setParent(parent);
+        if (root != null)
+            node.setRoot(root);
+        if (attributes != null)
+            node.getAttributes().putAll(attributes);
+    }
+
+    static AttributeBuilder attribBuilder() {
+        return new AttributeBuilder();
+    }
+
+    @NoArgsConstructor(access = AccessLevel.PACKAGE)
+    final class AttributeBuilder {
+        private final Map<String, Object> attributes = new HashMap<>();
+
+        public AttributeBuilder setAttribute(String key, Object value) {
+            attributes.put(key, value);
+            return this;
+        }
+
+        public Map<String, Object> build() {
+            return attributes;
+        }
+    }
 }
