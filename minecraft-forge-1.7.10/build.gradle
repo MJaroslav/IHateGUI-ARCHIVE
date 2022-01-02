@@ -59,7 +59,7 @@ dependencies {
     compile "codechicken:CodeChickenCore:${buildprop.ccc_version}:dev"
     compile "codechicken:NotEnoughItems:${buildprop.nei_version}:dev"
     compile "mcp.mobius.waila:Waila:${buildprop.waila_version}"
-    compile project(":core")
+    compile project(":jankson-loader")
 }
 
 processResources {

@@ -1,0 +1,21 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+apply plugin: "java-library"
+
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
+
+def buildprop = new Properties()
+file("build.properties").withInputStream { buildprop.load(it) }
+
+version = buildprop.version
+group = buildprop.group
+archivesBaseName = buildprop.name

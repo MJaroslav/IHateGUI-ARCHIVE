@@ -1,32 +1,59 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+}
+
 def buildprop = new Properties()
 file("build.properties").withInputStream { buildprop.load(it) }
 
 subprojects {
+    apply plugin: 'idea'
+    apply plugin: 'java-test-fixtures'
+    apply plugin: 'java'
+
     buildscript {
         repositories {
             mavenCentral()
         }
     }
 
-    apply plugin: 'java'
-    apply plugin: 'idea'
-
     configurations {
         shade
 
         compile.extendsFrom(shade)
-    }
 
-    idea.module.inheritOutputDirs = true
+        testCompileRecursive
+
+        testFixturesApi.extendsFrom(testCompileRecursive)
+    }
 
     dependencies {
         compile "org.jetbrains:annotations:${buildprop.jetbrains_annotations_version}"
 
         compileOnly "org.projectlombok:lombok:${buildprop.lombok_version}"
         annotationProcessor "org.projectlombok:lombok:${buildprop.lombok_version}"
+        testFixturesCompile "org.projectlombok:lombok:${buildprop.lombok_version}"
+
+        testFixturesCompile "junit:junit:${buildprop.junit_version}"
+        testRuntimeOnly "org.junit.vintage:junit-vintage-engine:${buildprop.junit_vintage_engine_version}"
 
         testCompileOnly "org.projectlombok:lombok:${buildprop.lombok_version}"
         testAnnotationProcessor "org.projectlombok:lombok:${buildprop.lombok_version}"
+    }
+
+    idea {
+        module {
+            inheritOutputDirs = true
+            // Resolving configuration 'testFixturesApi' directly is not allowed
+            // ARE YOU SURE??
+            // scopes.COMPILE.plus += [configurations.testFixturesApi]
+            scopes.COMPILE.plus += [configurations.testCompileRecursive]
+        }
+    }
+
+    test {
+        useJUnitPlatform()
     }
 
     tasks.withType(Jar)*.doFirst {
@@ -37,4 +64,3 @@ subprojects {
         }
     }
 }
-
