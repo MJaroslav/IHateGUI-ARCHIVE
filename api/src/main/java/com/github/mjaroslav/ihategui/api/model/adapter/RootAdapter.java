@@ -3,6 +3,7 @@ package com.github.mjaroslav.ihategui.api.model.adapter;
 import com.github.mjaroslav.ihategui.api.model.Container;
 import com.github.mjaroslav.ihategui.api.model.Node;
 import com.github.mjaroslav.ihategui.api.model.RootContainer;
+import com.github.mjaroslav.ihategui.api.render.ViewRender;
 import com.github.mjaroslav.ihategui.util.Pair.IntPair;
 import lombok.*;
 import org.jetbrains.annotations.NotNull;
@@ -43,5 +44,10 @@ public abstract class RootAdapter implements RootContainer {
                 deque.addAll(((Container) node).getNodes());
         }
         return null;
+    }
+
+    @Override
+    public void draw(ViewRender render, int mouseX, int mouseY, float partialTicks) {
+        getContainer().draw(render, mouseX, mouseY, partialTicks);
     }
 }

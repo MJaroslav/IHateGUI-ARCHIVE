@@ -1,5 +1,6 @@
 package com.github.mjaroslav.ihategui.api.model;
 
+import com.github.mjaroslav.ihategui.api.render.ViewRender;
 import com.github.mjaroslav.ihategui.util.Pair.IntPair;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -80,7 +81,7 @@ public interface Node {
     // =========================
     // Graphics
     // =========================
-    void draw(int mouseX, int mouseY, float partialTicks);
+    void draw(ViewRender render, int mouseX, int mouseY, float partialTicks);
 
     // Required for builders
     static void setAllParams(@NotNull Node node, @Nullable IntPair size,

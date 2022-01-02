@@ -3,6 +3,7 @@ package com.github.mjaroslav.ihategui.api.model.adapter;
 import com.github.mjaroslav.ihategui.api.model.Container;
 import com.github.mjaroslav.ihategui.api.model.Node;
 import com.github.mjaroslav.ihategui.api.model.RootContainer;
+import com.github.mjaroslav.ihategui.api.render.ViewRender;
 import com.github.mjaroslav.ihategui.api.view.Ignore;
 import com.github.mjaroslav.ihategui.util.Pair.IntPair;
 import lombok.EqualsAndHashCode;
@@ -78,7 +79,7 @@ public abstract class NodeAdapter implements Node {
     }
 
     @Override
-    public void draw(int mouseX, int mouseY, float partialTicks) {
+    public void draw(ViewRender render, int mouseX, int mouseY, float partialTicks) {
 
     }
 }

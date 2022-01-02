@@ -1,5 +1,6 @@
 package com.github.mjaroslav.ihategui.api.model;
 
+import com.github.mjaroslav.ihategui.api.render.ViewRender;
 import com.github.mjaroslav.ihategui.util.Pair.IntPair;
 import lombok.NonNull;
 import org.jetbrains.annotations.NotNull;
@@ -20,4 +21,6 @@ public interface RootContainer {
 
     @NotNull
     IntPair getRootSize();
+
+    void draw(ViewRender render, int mouseX, int mouseY, float partialTicks);
 }

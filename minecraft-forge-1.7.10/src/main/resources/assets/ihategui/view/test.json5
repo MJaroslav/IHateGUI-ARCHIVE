@@ -1,0 +1,11 @@
+{
+  "class": "LinearLayout",
+  "orientation": "VERTICAL",
+  "nodes": [
+    {
+      "class": "Button",
+      "id": "btn1",
+      "text": "Hello world!"
+    }
+  ]
+}
