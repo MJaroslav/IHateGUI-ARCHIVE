@@ -1,4 +1,4 @@
-package com.github.mjaroslav.ihategui.model;
+package com.github.mjaroslav.ihategui.api.model;
 
 import com.github.mjaroslav.ihategui.util.ParsingHelper;
 import lombok.*;

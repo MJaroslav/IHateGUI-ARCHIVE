@@ -1,4 +1,4 @@
-package com.github.mjaroslav.ihategui.model;
+package com.github.mjaroslav.ihategui.api.model;
 
 public enum Alignment {
     TOP, BOTTOM, LEFT, RIGHT, CENTER, TOP_LEFT, TOP_RIGHT,

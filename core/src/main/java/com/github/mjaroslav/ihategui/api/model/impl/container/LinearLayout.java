@@ -1,10 +1,10 @@
-package com.github.mjaroslav.ihategui.model.layout;
+package com.github.mjaroslav.ihategui.api.model.impl.container;
 
 import com.github.mjaroslav.ihategui.api.model.Container;
 import com.github.mjaroslav.ihategui.api.model.Node;
 import com.github.mjaroslav.ihategui.api.model.RootContainer;
 import com.github.mjaroslav.ihategui.api.model.adapter.ContainerAdapter;
-import com.github.mjaroslav.ihategui.model.Orientation;
+import com.github.mjaroslav.ihategui.api.model.Orientation;
 import com.github.mjaroslav.ihategui.util.Pair.IntPair;
 import lombok.*;
 import org.jetbrains.annotations.NotNull;
@@ -45,5 +45,18 @@ public class LinearLayout extends ContainerAdapter {
         result.setOrientation(orientation);
         Node.setAllParams(result, size, position, enable, visible, id, parent, root, attributes);
         return result;
+    }
+
+    // TODO: Do something with this
+    public static class LinearLayoutBuilder {
+        public LinearLayoutBuilder size(int width, int height) {
+            size = new IntPair(width, height);
+            return this;
+        }
+
+        public LinearLayoutBuilder position(int x, int y) {
+            position = new IntPair(x, y);
+            return this;
+        }
     }
 }

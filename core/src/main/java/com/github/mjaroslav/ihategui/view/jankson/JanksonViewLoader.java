@@ -6,8 +6,8 @@ import blue.endless.jankson.JsonObject;
 import blue.endless.jankson.JsonPrimitive;
 import com.github.mjaroslav.ihategui.api.model.Container;
 import com.github.mjaroslav.ihategui.api.model.Node;
+import com.github.mjaroslav.ihategui.api.model.TextSize;
 import com.github.mjaroslav.ihategui.api.view.ViewLoader;
-import com.github.mjaroslav.ihategui.model.TextSize;
 import com.github.mjaroslav.ihategui.util.Pair.IntPair;
 import com.github.mjaroslav.ihategui.util.ReflectionHelper;
 import lombok.Getter;
@@ -25,6 +25,9 @@ public final class JanksonViewLoader implements ViewLoader {
 
     private final NodeDeserializer deserializer = new NodeDeserializer();
 
+    private final boolean importProvidedNodes;
+    private final boolean importProvidedContainers;
+
     @Getter
     // Should be @NotNull, but constructor should be without this parameter
     private Container rootContainer;
@@ -40,6 +43,10 @@ public final class JanksonViewLoader implements ViewLoader {
         val controller = object.get(String.class, "controller");
         if (controller != null)
             this.controller = ReflectionHelper.createClassInstance(controller);
+        if (importProvidedNodes)
+            deserializer.nodeImport("com.github.mjaroslav.ihategui.api.model.impl.node.*");
+        if (importProvidedContainers)
+            deserializer.nodeImport("com.github.mjaroslav.ihategui.api.model.impl.container.*");
         val imports = (JsonArray) object.get("imports");
         if (imports != null)
             for (val element : imports)

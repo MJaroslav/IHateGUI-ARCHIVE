@@ -1,11 +1,7 @@
-package com.github.mjaroslav.ihategui.model.element;
+package com.github.mjaroslav.ihategui.api.model.impl.node;
 
-import com.github.mjaroslav.ihategui.api.model.Container;
-import com.github.mjaroslav.ihategui.api.model.Node;
-import com.github.mjaroslav.ihategui.api.model.RootContainer;
+import com.github.mjaroslav.ihategui.api.model.*;
 import com.github.mjaroslav.ihategui.api.model.adapter.NodeAdapter;
-import com.github.mjaroslav.ihategui.model.Alignment;
-import com.github.mjaroslav.ihategui.model.TextSize;
 import com.github.mjaroslav.ihategui.util.Pair.IntPair;
 import lombok.*;
 import org.jetbrains.annotations.NotNull;
@@ -38,5 +34,18 @@ public class Button extends NodeAdapter {
             result.setTextAlignment(textAlignment);
         Node.setAllParams(result, size, position, enable, visible, id, parent, root, attributes);
         return result;
+    }
+
+    // TODO: Do something with this
+    public static class ButtonBuilder {
+        public ButtonBuilder size(int width, int height) {
+            size = new IntPair(width, height);
+            return this;
+        }
+
+        public ButtonBuilder position(int x, int y) {
+            position = new IntPair(x, y);
+            return this;
+        }
     }
 }
